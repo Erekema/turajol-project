@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация — TuraJol</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #EDE3D5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; position: relative; }
+        
+        /* Кнопка НАЗАД */
+        .btn-back { position: absolute; top: 25px; left: 30px; color: #2b5c5e; text-decoration: none; font-weight: bold; font-size: 1.1rem; transition: color 0.3s; }
+        .btn-back:hover { color: #d17c60; }
+
+        .auth-card { background: #fff; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 100%; max-width: 400px; text-align: center; box-sizing: border-box; }
+        .auth-card h2 { color: #2b5c5e; margin-bottom: 25px; font-size: 1.8rem; }
+        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; outline: none; transition: border 0.3s; }
+        input:focus { border-color: #2b5c5e; }
+        .btn-auth { width: 100%; padding: 15px; background: #2b5c5e; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: background 0.3s; }
+        .btn-auth:hover { background: #1e4042; }
+        .switch-link { margin-top: 15px; font-size: 0.9rem; color: #636e72; }
+        .switch-link a { color: #d17c60; text-decoration: none; font-weight: bold; }
+
+        @media (max-width: 768px) {
+            .btn-back { top: 15px; left: 15px; font-size: 1rem; }
+            .auth-card { margin: 20px; padding: 30px 20px; }
+            .auth-card h2 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="btn-back">← Назад на главную</a>
+
+    <div class="auth-card">
+        <h2>Создать аккаунт</h2>
+        <form id="registerForm">
+            <input type="text" id="regName" placeholder="Имя" required>
+            <input type="text" id="regSurname" placeholder="Фамилия" required>
+            <input type="tel" id="regPhone" placeholder="Номер телефона" required>
+            <input type="email" id="regEmail" placeholder="Электронный адрес" required>
+            <input type="password" id="regPass" placeholder="Пароль" required>
+            <button type="submit" class="btn-auth">Зарегистрироваться</button>
+        </form>
+        <div class="switch-link">Уже есть аккаунт? <a href="login.html">Войти</a></div>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const user = {
+                name: document.getElementById('regName').value,
+                surname: document.getElementById('regSurname').value,
+                phone: document.getElementById('regPhone').value,
+                email: document.getElementById('regEmail').value,
+                location: '', dob: '', about: '', avatar: 'https://cdn-icons-png.flaticon.com/512/149/149071.png',
+                psychotype: '', pTitle: '', pDesc: ''
+            };
+            localStorage.setItem('turajol_user', JSON.stringify(user));
+            localStorage.setItem('turajol_auth', 'true');
+            window.location.href = 'quiz.html'; 
+        });
+    </script>
+</body>
+</html>

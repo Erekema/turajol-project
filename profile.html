@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет — TuraJol</title>
+    <style>
+        :root { --bg: #EDE3D5; --white: #fff; --teal: #2b5c5e; --terra: #d17c60; --text: #2d3436; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; }
+        nav { background: var(--white); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        nav a { text-decoration: none; color: var(--teal); font-weight: bold; font-size: 1.1rem; }
+        .btn-outline { border: 2px solid var(--terra); color: var(--terra); padding: 8px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; }
+        
+        .dashboard { display: grid; grid-template-columns: 300px 1fr; gap: 30px; max-width: 1200px; margin: 40px auto; padding: 0 20px; align-items: start;}
+        .card { background: var(--white); border-radius: 15px; padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.03); margin-bottom: 20px;}
+        
+        .profile-header { text-align: center; border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
+        .avatar { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--teal); margin-bottom: 15px; }
+        .profile-header h2 { margin: 0; color: var(--teal); }
+        .profile-header p { margin: 5px 0 0; color: #666; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 0.9rem; color: #666; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: inherit;}
+        .btn-save { width: 100%; padding: 12px; background: var(--teal); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        
+        .ai-result { background: linear-gradient(135deg, var(--teal), #1e4042); color: var(--white); position: relative;}
+        .ai-result h3 { color: #eab308; margin-top: 0; font-size: 1.5rem;}
+        
+        /* Кнопка перепрохождения */
+        .btn-retake { border: 1px solid rgba(255,255,255,0.5); color: #fff; padding: 8px 15px; border-radius: 8px; text-decoration: none; font-size: 0.9rem; display: inline-block; margin-top: 15px; transition: 0.3s;}
+        .btn-retake:hover { background: #fff; color: var(--teal); }
+
+        .tabs { display: flex; gap: 10px; border-bottom: 2px solid #ddd; margin-bottom: 20px; }
+        .tab { padding: 10px 20px; cursor: pointer; font-weight: bold; color: #666; border-bottom: 3px solid transparent; margin-bottom: -2px; }
+        .tab.active { color: var(--teal); border-color: var(--teal); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .mock-box { border: 1px dashed #ccc; padding: 40px; text-align: center; border-radius: 10px; color: #888; }
+        .chat-btn { display: inline-block; background: var(--terra); color: #fff; padding: 10px 20px; border-radius: 20px; text-decoration: none; margin: 5px; }
+
+        /* Сетка для избранного */
+        .fav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .tour-card { background: #fff; border-radius: 15px; overflow: hidden; border: 1px solid #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; flex-direction: column;}
+        .tour-img { height: 150px; width: 100%; object-fit: cover; }
+        .tour-info { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;}
+        .tour-info h4 { margin: 0 0 5px 0; color: var(--teal); }
+        .tour-info p { font-size: 0.85rem; color: #666; margin: 0 0 10px 0;}
+        .btn-rm-fav { background: #fef2f2; color: #ef4444; border: 1px solid #fca5a5; width: 100%; padding: 8px; border-radius: 6px; cursor: pointer; font-weight: bold;}
+    
+    /* АДАПТАЦИЯ ПОД МОБИЛЬНЫЕ УСТРОЙСТВА */
+        @media (max-width: 768px) {
+            nav { padding: 15px; }
+            nav a:first-child { font-size: 0.9rem; }
+            .btn-outline { padding: 6px 12px; font-size: 0.85rem; }
+            
+            .dashboard { grid-template-columns: 1fr; margin: 20px auto; gap: 20px; }
+            .tabs { flex-wrap: wrap; }
+            .tab { flex-grow: 1; text-align: center; font-size: 0.9rem; padding: 10px; }
+            .fav-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html">← Вернуться на главную TuraJol</a>
+        <a href="#" class="btn-outline" onclick="logout()">Выйти</a>
+    </nav>
+
+    <div class="dashboard">
+        <div>
+            <div class="card profile-header">
+                <img id="userAvatar" src="" alt="Avatar" class="avatar">
+                <h2 id="userNameFull">Имя Фамилия</h2>
+                <p id="userEmail">email@example.com</p>
+                <p id="userPhone" style="font-size: 0.9rem;">+7 ...</p>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-top:0; color: var(--teal);">Настройки профиля</h3>
+                <form id="settingsForm">
+                    <div class="form-group"><label>Ссылка на фото</label><input type="text" id="setAvatar" placeholder="URL картинки"></div>
+                    <div class="form-group"><label>Место проживания</label><input type="text" id="setLocation" placeholder="Ваш город"></div>
+                    <div class="form-group"><label>Дата рождения</label><input type="date" id="setDob"></div>
+                    <div class="form-group"><label>О себе</label><textarea id="setAbout" rows="3" placeholder="Ваши увлечения"></textarea></div>
+                    <button type="button" class="btn-save" onclick="saveSettings()">Сохранить изменения</button>
+                </form>
+            </div>
+        </div>
+
+        <div>
+            <div class="card ai-result">
+                <h3>Ваш профиль туриста: <span id="psyTitle">Загрузка...</span></h3>
+                <p id="psyDesc" style="font-size: 1.1rem; line-height: 1.6;">Пройдите ИИ-анкетирование, чтобы узнать свой психотип.</p>
+                
+                <a href="quiz.html" class="btn-retake">↻ Пройти анкетирование заново</a>
+            </div>
+
+            <div class="card">
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab(event, 'favs')">Избранные туры</div>
+                    <div class="tab" onclick="switchTab(event, 'chat')">Связь с консьержем</div>
+                    <div class="tab" onclick="switchTab(event, 'history')">История поездок</div>
+                </div>
+
+                <div id="favs" class="tab-content active">
+                    <div id="favContainer" class="fav-grid">
+                        </div>
+                    <div id="noFavsMsg" class="mock-box" style="display: none;">
+                        У вас пока нет сохраненных туров. <br><br>
+                        <a href="index.html#destinations" style="color: var(--teal); font-weight: bold; text-decoration: none;">Выбрать тур на главной ➔</a>
+                    </div>
+                </div>
+
+                <div id="chat" class="tab-content">
+                    <h3>Персональная поддержка</h3>
+                    <p>Выберите, с кем хотите пообщаться:</p>
+                    <a href="#" class="chat-btn" style="background: var(--teal);">🤖 Чат с AI-Консьержем</a>
+                    <a href="#" class="chat-btn">👤 Связаться с оператором</a>
+                </div>
+
+                <div id="history" class="tab-content">
+                    <div class="mock-box">Вы еще не бронировали туры через TuraJol.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Копия базы туров для отображения в избранном
+        const allTours = [
+            { id: "t1", title: "Турция, ОАЭ", desc: "Пляжный отдых, гастрономия и высокий сервис.", img: "https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?w=600" },
+            { id: "t2", title: "Алматы Luxury", desc: "Рестораны высокой кухни и премиальные спа-отели.", img: "Картинки/almaty-luxury.jpg" },
+            { id: "t3", title: "Актау-курорт", desc: "Первоклассный отельный сервис на Каспии.", img: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600" },
+            { id: "t4", title: "Тянь-Шань, Шымбулак", desc: "Сноуборд и мощный драйв.", img: "https://images.unsplash.com/photo-1551524559-8af4e6624178?w=600" },
+            { id: "t5", title: "Чарынский каньон", desc: "Спорт и покорение дикой реки.", img: "Картинки/Чарынскийканьон.jpg" },
+            { id: "t6", title: "Алтай (Выживание)", desc: "Покорение новых высот с гидом.", img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600" },
+            { id: "t7", title: "Озера Кольсай", desc: "Тишина и уединение с природой.", img: "Картинки/ОзераКольсай.jpeg" },
+            { id: "t8", title: "Бурабай", desc: "Отсутствие шумной туристической толпы.", img: "https://images.unsplash.com/photo-1554868425-4674eb8fbd92?w=600" },
+            { id: "t9", title: "Баянаул", desc: "Красивые скалы и возможность перезагрузиться.", img: "https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=600" },
+            { id: "t10", title: "Мангистау, Бозжыра", desc: "Исследование марсианских пейзажей.", img: "Картинки/МангистауБозжыра.webp" },
+            { id: "t11", title: "Тамгалы-Тас", desc: "Петроглифы, история и степи.", img: "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?w=600" },
+            { id: "t12", title: "Алтын-Эмель", desc: "Поющие барханы вдали от протоптанных троп.", img: "https://images.unsplash.com/photo-1528127269322-539801943592?w=600" }
+        ];
+
+        function loadUserData() {
+            const userStr = localStorage.getItem('turajol_user');
+            if(!userStr) { window.location.href = 'login.html'; return; }
+            
+            const user = JSON.parse(userStr);
+            document.getElementById('userNameFull').innerText = `${user.name} ${user.surname}`;
+            document.getElementById('userEmail').innerText = user.email;
+            document.getElementById('userPhone').innerText = user.phone;
+            document.getElementById('userAvatar').src = user.avatar;
+
+            document.getElementById('setAvatar').value = user.avatar || '';
+            document.getElementById('setLocation').value = user.location || '';
+            document.getElementById('setDob').value = user.dob || '';
+            document.getElementById('setAbout').value = user.about || '';
+
+            if(user.psychotype) {
+                document.getElementById('psyTitle').innerText = user.pTitle;
+                document.getElementById('psyDesc').innerText = user.pDesc;
+            }
+
+            renderFavorites();
+        }
+
+        // Отрисовка Избранных туров
+        function renderFavorites() {
+            const favIds = JSON.parse(localStorage.getItem('turajol_favs') || '[]');
+            const container = document.getElementById('favContainer');
+            const noMsg = document.getElementById('noFavsMsg');
+            
+            container.innerHTML = '';
+
+            if (favIds.length === 0) {
+                noMsg.style.display = 'block';
+            } else {
+                noMsg.style.display = 'none';
+                favIds.forEach(id => {
+                    const tour = allTours.find(t => t.id === id);
+                    if (tour) {
+                        container.innerHTML += `
+                            <div class="tour-card">
+                                <img src="${tour.img}" class="tour-img">
+                                <div class="tour-info">
+                                    <div>
+                                        <h4>${tour.title}</h4>
+                                        <p>${tour.desc}</p>
+                                    </div>
+                                    <button class="btn-rm-fav" onclick="removeFav('${tour.id}')">Удалить из избранного</button>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+            }
+        }
+
+        function removeFav(id) {
+            let favs = JSON.parse(localStorage.getItem('turajol_favs') || '[]');
+            favs = favs.filter(favId => favId !== id);
+            localStorage.setItem('turajol_favs', JSON.stringify(favs));
+            renderFavorites(); // Обновляем сетку
+        }
+
+        function saveSettings() {
+            let user = JSON.parse(localStorage.getItem('turajol_user'));
+            user.avatar = document.getElementById('setAvatar').value || 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+            user.location = document.getElementById('setLocation').value;
+            user.dob = document.getElementById('setDob').value;
+            user.about = document.getElementById('setAbout').value;
+            localStorage.setItem('turajol_user', JSON.stringify(user));
+            alert("Настройки сохранены!");
+            loadUserData();
+        }
+
+        function switchTab(evt, tabName) {
+            let tabcontent = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabcontent.length; i++) { tabcontent[i].classList.remove("active"); }
+            let tablinks = document.getElementsByClassName("tab");
+            for (let i = 0; i < tablinks.length; i++) { tablinks[i].classList.remove("active"); }
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        function logout() {
+            localStorage.removeItem('turajol_auth');
+            window.location.href = 'index.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', loadUserData);
+    </script>
+</body>
+</html>

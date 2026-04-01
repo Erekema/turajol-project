@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>О проекте — TuraJol</title>
+    <style>
+        :root {
+            --bg-body: #EDE3D5; 
+            --container-bg: #ffffff; 
+            --text-main: #2d3436; 
+            --text-dim: #636e72; 
+            --accent-teal: #2b5c5e; 
+            --accent-terracotta: #d17c60; 
+            --accent-bright: #eab308; 
+            --section-padding: 4rem;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        /* --- Навигация --- */
+        .site-header {
+            background-color: var(--container-bg);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 20px;
+        }
+
+        .logo-container img { height: 60px; }
+
+        nav ul {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover { color: var(--accent-teal); }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .lang-switcher {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            font-weight: 600;
+        }
+
+        .lang-switcher span { margin: 0 5px; cursor: pointer; }
+
+        .btn-login {
+            background: var(--accent-teal);
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        /* --- Шапка страницы О проекте --- */
+        .page-header {
+            background: linear-gradient(rgba(43, 92, 94, 0.8), rgba(43, 92, 94, 0.9)), url('https://images.unsplash.com/photo-1543301824-0010072b0c15?auto=format&fit=crop&w=1920&q=80') center/cover;
+            color: #fff;
+            padding: 6rem 20px;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        /* --- Контент страницы --- */
+        .content-wrapper {
+            background-color: var(--container-bg);
+            padding: 4rem 0;
+            box-shadow: 0 0 30px rgba(0,0,0,0.03); 
+        }
+
+        .about-section {
+            margin-bottom: 4rem;
+        }
+
+        .about-section h2 {
+            color: var(--accent-teal);
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        .about-text {
+            font-size: 1.1rem;
+            color: var(--text-main);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Сетки для блоков */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .value-card {
+            background: #fdfdfd;
+            border: 1px solid #f0f0f0;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+        }
+
+        .value-card h3 {
+            color: var(--accent-terracotta);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .problem-list li {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .problem-list li::before {
+            content: "✘";
+            color: var(--accent-terracotta);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .solution-list li {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .solution-list li::before {
+            content: "✔";
+            color: var(--accent-teal);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* --- Подвал --- */
+        footer {
+            padding: 4rem 0 2rem;
+            background: var(--text-main); 
+            color: #fff;
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+        }
+        .footer-col h4 { color: var(--accent-terracotta); margin-bottom: 1rem; }
+        .footer-col ul { list-style: none; padding: 0; }
+        .footer-col ul li { margin-bottom: 8px; color: #ccc; }
+        .footer-bottom { text-align: center; margin-top: 3rem; border-top: 1px solid #444; padding-top: 1.5rem; color: #999;}
+    
+    /* АДАПТАЦИЯ ПОД МОБИЛЬНЫЕ УСТРОЙСТВА */
+        @media (max-width: 768px) {
+            .header-inner { flex-direction: row; padding: 10px; }
+            .site-header nav { display: none; } /* Скрываем текст меню */
+            .logo-container img { height: 40px; }
+            .header-right { margin-top: 0; }
+            .btn-login { padding: 8px 12px; font-size: 0.85rem; }
+
+            .page-header { padding: 4rem 20px; }
+            .page-header h1 { font-size: 2.2rem; }
+            .grid-2 { grid-template-columns: 1fr; gap: 1.5rem; }
+            .footer-content { grid-template-columns: 1fr; text-align: center; gap: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="index.html" class="logo-container">
+                <img src="turajol-logo.svg" alt="TuraJol">
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html#how-it-works">Как это работает</a></li>
+                    <li><a href="index.html#destinations">Популярные направления</a></li>
+                    <li><a href="about.html" style="color: var(--accent-teal); font-weight: bold;">О проекте</a></li>
+                </ul>
+            </nav>
+            <div class="header-right">
+                <div class="lang-switcher">
+                    <span>KZ</span> | <span>RU</span> | <span>EN</span>
+                </div>
+                <a href="#login" class="btn-login">Вход</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="page-header">
+        <div class="container">
+            <h1>О платформе TuraJol</h1>
+            <p>Первый в Казахстане сервис персонализированного туризма на основе технологий искусственного интеллекта.</p>
+        </div>
+    </section>
+
+    <main class="container content-wrapper">
+        <div class="container" style="max-width: 1000px;">
+            
+            <section class="about-section">
+                <h2>Наша миссия и концепция</h2>
+                <p class="about-text">
+                    <strong>TuraJol</strong> (от каз. «путь» + тур + сапар) — это онлайн-платформа осознанных путешествий на базе искусственного интеллекта, специализирующаяся на персонализированном подборе туристических маршрутов по Казахстану.
+                </p>
+                <p class="about-text">
+                    Наша миссия — помочь каждому казахстанцу открыть уникальные места своей страны, получив маршрут, точно соответствующий его внутреннему состоянию, интересам и стилю жизни.
+                </p>
+            </section>
+
+            <section class="about-section">
+                <h2>Почему это важно?</h2>
+                <div class="grid-2">
+                    <div>
+                        <h3 style="color: var(--text-main); margin-bottom: 1rem;">Текущие вызовы рынка:</h3>
+                        <ul class="problem-list" style="list-style: none; padding: 0;">
+                            <li>Большинство туристов сталкиваются с избытком однотипных предложений, не учитывающих их индивидуальные интересы.</li>
+                            <li>В Казахстане до сих пор отсутствуют платформы, применяющие технологии искусственного интеллекта для подбора туристических маршрутов.</li>
+                            <li>Туристические потоки концентрируются в 3–5 известных местах, тогда как сотни уникальных локаций остаются неизвестными.</li>
+                            <li>Среднее время планирования внутреннего тура составляет 3–5 часов.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 style="color: var(--text-main); margin-bottom: 1rem;">Решение TuraJol:</h3>
+                        <ul class="solution-list" style="list-style: none; padding: 0;">
+                            <li>Платформа применяет адаптивное интервью (5–7 вопросов) для анализа предпочтений.</li>
+                            <li>Алгоритм определяет психотип путешественника из четырёх категорий: Исследователь, Гедонист, Экстремал или Интроверт-эстет.</li>
+                            <li>На основе психотипа готовый персональный маршрут формируется за 5 минут.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="about-section">
+                <h2>Ценность платформы</h2>
+                <div class="grid-2">
+                    <div class="value-card">
+                        <h3>Для туриста</h3>
+                        <p>Готовый персональный маршрут генерируется за 5 минут вместо 4 часов самостоятельного поиска в интернете.</p>
+                    </div>
+                    <div class="value-card">
+                        <h3>Для регионов РК</h3>
+                        <p>Обеспечивается равномерное распределение туристических потоков и эффективное продвижение малоизвестных локаций страны.</p>
+                    </div>
+                    <div class="value-card">
+                        <h3>Для государства</h3>
+                        <p>Предоставляются аналитические данные о предпочтениях туристов, необходимые для стратегического планирования инфраструктуры.</p>
+                    </div>
+                    <div class="value-card">
+                        <h3>Для турбизнеса</h3>
+                        <p>Создается канал для таргетированного выхода туроператоров на аудиторию с конкретным психологическим профилем.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="about-section">
+                <h2>Социальный эффект и вклад</h2>
+                <p class="about-text">
+                    Мы стремимся повысить удовлетворённость казахстанских туристов внутренними поездками и грамотно распределить туристические потоки по регионам страны. Проект способствует активному продвижению культурного и природного наследия Казахстана, а также созданию новых рабочих мест в IT-секторе и туристической отрасли.
+                </p>
+                <div style="margin-top: 3rem; padding: 20px; background: var(--bg-body); border-radius: 10px; text-align: center; color: var(--text-dim); font-size: 0.95rem;">
+                    Исследовательская база проекта разработана в Кокшетауском университете имени Абая Мырзахметова. <br>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-col">
+                <h4>Контакты</h4>
+                <ul>
+                    <li>Кokshetau University im. A. Myrzakhmetova</li>
+                    <li>Email: info@turajol.kz</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Социальные сети</h4>
+                <ul>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">Telegram</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>О проекте</h4>
+                <ul>
+                    <li><a href="#">Партнерам</a></li>
+                    <li><a href="#">Политика конфиденциальности</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>&copy; 2026 TuraJol Project. Сделано для вашей мобильности.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

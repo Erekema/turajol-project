@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TuraJol AI — Анкетирование</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(rgba(43,92,94,0.9), rgba(43,92,94,0.9)), url('https://images.unsplash.com/photo-1543301824-0010072b0c15?auto=format&fit=crop&w=1920&q=80') center/cover; margin: 0; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; position: relative; }
+        
+        /* Навигация квиза (Кнопки Отмена и Пропустить) */
+        .quiz-top-nav { position: absolute; top: 25px; width: 100%; max-width: 1200px; padding: 0 30px; display: flex; justify-content: space-between; box-sizing: border-box; z-index: 100; }
+        .btn-nav-quiz { color: #fff; text-decoration: none; font-weight: bold; padding: 10px 20px; border-radius: 8px; background: rgba(255,255,255,0.15); transition: 0.3s; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.3); }
+        .btn-cancel:hover { background: #ef4444; border-color: #ef4444; }
+        .btn-skip:hover { background: #eab308; border-color: #eab308; color: #000; }
+
+        .quiz-container { background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); padding: 50px; border-radius: 20px; width: 100%; max-width: 800px; text-align: center; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.3); box-sizing: border-box; }
+        h2 { font-size: 2rem; margin-bottom: 10px; color: #eab308; }
+        h3 { font-size: 1.5rem; margin-bottom: 30px; font-weight: 500; }
+        .options-grid { display: flex; flex-direction: column; gap: 15px; }
+        .option-btn { background: rgba(255,255,255,0.9); border: none; padding: 20px; border-radius: 12px; font-size: 1.1rem; color: #2d3436; cursor: pointer; transition: all 0.3s; font-weight: 600; text-align: left; }
+        .option-btn:hover { background: #eab308; color: #fff; transform: translateX(10px); }
+        .loading-screen { display: none; }
+        .progress-bar-wrap { width: 100%; height: 8px; background: rgba(255,255,255,0.2); border-radius: 10px; margin-top: 20px; overflow: hidden; }
+        .progress-bar { height: 100%; width: 0%; background: #eab308; transition: width 0.1s linear; }
+
+        /* АДАПТАЦИЯ ПОД МОБИЛЬНЫЕ УСТРОЙСТВА */
+        @media (max-width: 768px) {
+            .quiz-top-nav { padding: 0 15px; top: 15px; }
+            .btn-nav-quiz { padding: 8px 12px; font-size: 0.85rem; }
+            .quiz-container { padding: 30px 20px; margin: 80px 20px 20px; }
+            h2 { font-size: 1.5rem; }
+            h3 { font-size: 1.2rem; margin-bottom: 20px; }
+            .option-btn { padding: 15px; font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-top-nav">
+        <a href="profile.html" class="btn-nav-quiz btn-cancel">✕ Отмена</a>
+        <a href="profile.html" class="btn-nav-quiz btn-skip">Пропустить тест ➔</a>
+    </div>
+
+    <div class="quiz-container" id="quizBox">
+        <h2 id="qCounter">Вопрос 1 из 10</h2>
+        <h3 id="questionText">Загрузка...</h3>
+        <div class="options-grid" id="optionsBox"></div>
+    </div>
+
+    <div class="quiz-container loading-screen" id="loadingBox">
+        <h2>ИИ анализирует ответы...</h2>
+        <h3>Формируем ваш уникальный психотип</h3>
+        <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+    </div>
+
+    <script>
+        const questions = [
+            { q: "Каким вы представляете идеальный уикенд?", opts: [{t:"Поездка на джипах туда, где нет связи", v:"explorer"}, {t:"Спа-отель с панорамным видом", v:"hedonist"}, {t:"Сплав по бурной горной реке", v:"extreme"}, {t:"Тихий домик в лесу с книгой", v:"introvert"}] },
+            { q: "Что для вас самое важное в путешествии?", opts: [{t:"Сделать уникальные кадры тайных мест", v:"explorer"}, {t:"Высокий уровень сервиса", v:"hedonist"}, {t:"Преодоление себя и адреналин", v:"extreme"}, {t:"Вдохновение и отсутствие толпы", v:"introvert"}] },
+            { q: "Ваш идеальный пейзаж — это...", opts: [{t:"Дикие каньоны и степи", v:"explorer"}, {t:"Уютные террасы на фоне гор", v:"hedonist"}, {t:"Крутые скалистые склоны", v:"extreme"}, {t:"Спокойное озеро в лесу", v:"introvert"}] },
+            { q: "Как вы относитесь к неожиданностям?", opts: [{t:"Это лучшая часть приключения!", v:"explorer"}, {t:"Предпочитаю, чтобы всё решили за меня", v:"hedonist"}, {t:"Это вызов, который я принимаю", v:"extreme"}, {t:"Не люблю их, важен покой", v:"introvert"}] },
+            { q: "Что вы обычно привозите из поездки?", opts: [{t:"Карту новых маршрутов", v:"explorer"}, {t:"Местное вино и деликатесы", v:"hedonist"}, {t:"Снаряжение со следами эксплуатации", v:"extreme"}, {t:"Фотопленку и новые мысли", v:"introvert"}] },
+            { q: "Какой транспорт выберете?", opts: [{t:"Надежный внедорожник", v:"explorer"}, {t:"Бизнес-класс или комфорт-авто", v:"hedonist"}, {t:"Спортивный байк или вертолет", v:"extreme"}, {t:"Поезд с панорамными окнами", v:"introvert"}] },
+            { q: "Идеальный формат ужина?", opts: [{t:"Еда, приготовленная на костре", v:"explorer"}, {t:"Ресторан высокой кухни", v:"hedonist"}, {t:"Быстрый перекус после восхождения", v:"extreme"}, {t:"Уютное тихое кафе с местными", v:"introvert"}] },
+            { q: "С кем предпочитаете путешествовать?", opts: [{t:"С группой единомышленников", v:"explorer"}, {t:"Со второй половинкой или семьей", v:"hedonist"}, {t:"Соло или с напарником по страховке", v:"extreme"}, {t:"В одиночестве или с одним близким другом", v:"introvert"}] },
+            { q: "Ваше отношение к гаджетам?", opts: [{t:"Только для навигации", v:"explorer"}, {t:"Камера для красивых сторис", v:"hedonist"}, {t:"Экшен-камера всегда на шлеме", v:"extreme"}, {t:"Полный цифровой детокс", v:"introvert"}] },
+            { q: "Ваша главная цель в путешествиях?", opts: [{t:"Открывать неизведанное", v:"explorer"}, {t:"Получать удовольствие от жизни", v:"hedonist"}, {t:"Испытывать себя на прочность", v:"extreme"}, {t:"Найти внутреннюю гармонию", v:"introvert"}] }
+        ];
+
+        const resultsData = {
+            explorer: { id: "explorer", title: "🔭 Исследователь", desc: "Жаждет нестандартных мест вдали от туристических троп." },
+            hedonist: { id: "hedonist", title: "🍷 Гедонист", desc: "Ценит комфорт, гастрономию и эстетику момента." },
+            extreme: { id: "extreme", title: "⚡ Экстремал", desc: "Ищет адреналин и выход за пределы зоны комфорта." },
+            introvert: { id: "introvert", title: "🎨 Интроверт-эстет", desc: "Ценит тишину, красоту и культурный контекст." }
+        };
+
+        let currentQ = 0;
+        let scores = { explorer: 0, hedonist: 0, extreme: 0, introvert: 0 };
+
+        function renderQuestion() {
+            document.getElementById('qCounter').innerText = `Вопрос ${currentQ + 1} из 10`;
+            document.getElementById('questionText').innerText = questions[currentQ].q;
+            const optsBox = document.getElementById('optionsBox');
+            optsBox.innerHTML = '';
+            questions[currentQ].opts.forEach(opt => {
+                let btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt.t;
+                btn.onclick = () => { scores[opt.v]++; currentQ++; nextStep(); };
+                optsBox.appendChild(btn);
+            });
+        }
+
+        function nextStep() {
+            if (currentQ < questions.length) { renderQuestion(); } 
+            else { finishQuiz(); }
+        }
+
+        function finishQuiz() {
+            // Скрываем верхнюю навигацию во время загрузки результатов
+            document.querySelector('.quiz-top-nav').style.display = 'none';
+            
+            document.getElementById('quizBox').style.display = 'none';
+            document.getElementById('loadingBox').style.display = 'block';
+            let prog = 0;
+            const bar = document.getElementById('progressBar');
+            const interval = setInterval(() => {
+                prog += 2; bar.style.width = prog + '%';
+                if (prog >= 100) {
+                    clearInterval(interval);
+                    saveAndRedirect();
+                }
+            }, 30);
+        }
+
+        function saveAndRedirect() {
+            let maxType = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+            const res = resultsData[maxType];
+            
+            let userStr = localStorage.getItem('turajol_user');
+            if (userStr) {
+                let user = JSON.parse(userStr);
+                user.psychotype = res.id;
+                user.pTitle = res.title;
+                user.pDesc = res.desc;
+                localStorage.setItem('turajol_user', JSON.stringify(user));
+            }
+            window.location.href = 'profile.html'; 
+        }
+
+        renderQuestion();
+    </script>
+</body>
+</html>
